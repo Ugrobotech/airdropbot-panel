@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Admin Dashboard</title>
+    <script defer src="script.js"></script>
+</head>
+
+<body>
+
+    <div class="dashboard">
+        <h1>Bot admin Panel</h1>
+        <div class="table-container">
+            <table id="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Network</th>
+                        <th>Subscribed</th>
+                        <th>Category</th>
+                        <th>Actions</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Table content will be dynamically generated here -->
+                </tbody>
+            </table>
+        </div>
+        <div class="count-box">
+            <div class="user-count">Users Count: <span id="userCount">0</span></div>
+            <div class="subscribed-count">Subscribed Users: <span id="subscribedCount">0</span></div>
+        </div>
+        <button class="create-button" id="create-button" onclick="openCreateModal()">Create New</button>
+    </div>
+
+    <div class="modal" id="editModal">
+        <!-- Edit Modal content will be dynamically generated here -->
+    </div>
+
+    <div class="modal" id="createModal">
+        <!-- Create Modal content will be dynamically generated here -->
+    </div>
+
+
+</body>
+
+</html>
