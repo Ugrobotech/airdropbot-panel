@@ -89,16 +89,34 @@ function openCreateModal() {
                     <input type="checkbox" id="create-potential" name="create-categories" value="potential">
                     <label for="create-potential">Potential</label>
                 </div>
-
+<br>
                 <label for="create-description">Description:</label>
                 <textarea id="create-description" rows="4" required></textarea>
-
+<br>
                 <button type="submit">Create Item</button>
             </form>
         </div>
     `;
+
+  // Destroy existing TinyMCE instances if they exist
+  if (tinymce.get("create-description")) {
+    tinymce.get("create-description").remove();
+  }
+  // Add the following code to initialize TinyMCE for the create-description textarea
+  tinymce.init({
+    selector: "#create-description",
+    height: 200,
+    plugins: "advlist autolink lists link image charmap print preview anchor",
+    toolbar:
+      "undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
+    setup: function (editor) {
+      editor.on("change", function () {
+        tinymce.triggerSave();
+      });
+    },
+  });
   createModal.style.display = "block";
-  mount();
+  // mount();
 }
 
 function closeCreateModal() {
@@ -107,10 +125,10 @@ function closeCreateModal() {
 
 function openEditModal(id) {
   // Add your modal display logic here for creating a new item
-  const createModal = document.getElementById("createModal");
-  createModal.innerHTML = `
+  const editModal = document.getElementById("editModal");
+  editModal.innerHTML = `
         <div class="modal-content">
-            <span class="close" onclick="closeCreateModal()">&times;</span>
+            <span class="close" onclick="closeEditModal()">&times;</span>
             <form id="edit-form">
                 <label for="edit-name">Name:</label>
                 <input type="text" id="edit-name" required>
@@ -131,15 +149,32 @@ function openEditModal(id) {
                     <input type="checkbox" id="edit-potential" name="edit-categories" value="potential">
                     <label for="edit-potential">Potential</label>
                 </div>
-
+<br>
                 <label for="edit-description">Description:</label>
-                <textarea id="edit-description" rows="4" required></textarea>
-
+                <textarea id="edit-description" rows="3" required></textarea>
+<br>
                 <button type="submit">edit Item</button>
             </form>
         </div>
     `;
-  createModal.style.display = "block";
+  // Destroy existing TinyMCE instances if they exist
+  if (tinymce.get("edit-description")) {
+    tinymce.get("edit-description").remove();
+  }
+
+  tinymce.init({
+    selector: "#edit-description",
+    height: 200,
+    plugins: "advlist autolink lists link image charmap print preview anchor",
+    toolbar:
+      "undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
+    setup: function (editor) {
+      editor.on("change", function () {
+        tinymce.triggerSave();
+      });
+    },
+  });
+  editModal.style.display = "block";
 }
 
 function closeEditModal() {
@@ -178,7 +213,7 @@ function updateItem(formData) {
   fetchDataAndRenderTable();
 }
 
-function fetchDataAndRenderTable() {
+async function fetchDataAndRenderTable() {
   // Dummy data - replace this with actual data from your backend
   const dummyData = [
     {
@@ -204,7 +239,12 @@ function fetchDataAndRenderTable() {
     },
   ];
 
-  generateTableRows(dummyData);
+  const Data = await fetchData("http://localhost:3000/admin");
+  const userCount = await fetchData("http://localhost:3000/admin/users");
+  const subCount = await fetchData("http://localhost:3000/admin/subs");
+  console.log(Data);
+  updateUserCount(userCount, subCount);
+  generateTableRows(Data);
 }
 
 function generateTableRows(data) {
@@ -223,14 +263,43 @@ function generateTableRows(data) {
       <td>${item.id}</td>
       <td>${item.name}</td>
       <td>${item.network}</td>
-      <td>${item.subscribed ? "Yes" : "No"}</td>
-      <td>${item.catergory}</td>
+      <td>${item.description}</td>
+       <td>${item.steps}</td>
+      <td>${item.category}</td>
+       <td>${item.cost}</td>
       <td>
         <button class="edit-button" data-id="${item.id}">Edit</button>
         <button class="notify-button" data-id="${item.id}">Notify</button>
       </td>
     `;
   });
+}
+
+async function fetchData(url) {
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("Data:", data);
+    return data;
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
+function updateUserCount(newCount, subCount) {
+  const subUserCountElement = document.getElementById("subscribedCount");
+  const userCountElement = document.getElementById("userCount"); // Replace with your actual HTML element ID
+  if (userCountElement && subUserCountElement) {
+    subUserCountElement.textContent = subCount;
+    userCountElement.textContent = newCount;
+  } else {
+    console.error("User count element not found.");
+  }
 }
 
 mount();

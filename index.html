@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
     <title>Admin Dashboard</title>
+    <script src="https://cdn.tiny.cloud/1/3dxk76acv04as5p0kfhq25m7a4g6qv3lsoayjo0bkkg0zsgl/tinymce/5/tinymce.min.js"
+        referrerpolicy="origin"></script>
     <script defer src="script.js"></script>
 </head>
 
@@ -13,6 +15,11 @@
 
     <div class="dashboard">
         <h1>Bot admin Panel</h1>
+        <br>
+        <div class="count-box">
+            <div class="user-count">Users Count: <span id="userCount">0</span></div>
+            <div class="subscribed-count">Subscribed Users: <span id="subscribedCount">0</span></div>
+        </div>
         <div class="table-container">
             <table id="data-table">
                 <thead>
@@ -20,8 +27,10 @@
                         <th>ID</th>
                         <th>Name</th>
                         <th>Network</th>
-                        <th>Subscribed</th>
+                        <th>Description</th>
+                        <th>Steps/Tasks</th>
                         <th>Category</th>
+                        <th>Price</th>
                         <th>Actions</th>
 
                     </tr>
@@ -32,21 +41,18 @@
             </table>
         </div>
         <br>
-        <div class="count-box">
-            <div class="user-count">Users Count: <span id="userCount">0</span></div>
-            <div class="subscribed-count">Subscribed Users: <span id="subscribedCount">0</span></div>
-        </div>
-        <br>
         <button class="create-button" id="create-button" onclick="openCreateModal()">Create New</button>
+    </div>
+
+    <div class="modal" id="createModal">
+        <!-- Create Modal content will be dynamically generated here -->
     </div>
 
     <div class="modal" id="editModal">
         <!-- Edit Modal content will be dynamically generated here -->
     </div>
 
-    <div class="modal" id="createModal">
-        <!-- Create Modal content will be dynamically generated here -->
-    </div>
+
 
 
 </body>
