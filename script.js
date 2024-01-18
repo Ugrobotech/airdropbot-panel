@@ -80,6 +80,10 @@ function openCreateModal() {
         <div class="modal-content">
             <span class="close" onclick="closeCreateModal()">&times;</span>
             <form id="create-form">
+             <br>
+ <label for="create-url">Image Url:</label>
+                <input type="text" id="create-name" required>
+<br>
                 <label for="create-name">Name:</label>
                 <input type="text" id="create-name" required>
                 
@@ -165,6 +169,11 @@ function openEditModal(id, data) {
         <div class="modal-content">
             <span class="close" onclick="closeEditModal()">&times;</span>
             <form id="edit-form" data-id="${id}">
+  <br>
+<label for="image">Image:</label>
+<input type="file" id="image" accept="image/*" onchange="previewImage(this)">
+<img id="image-preview" src="" alt="Image Preview" style="max-width: 100%; display: none;">
+<br>
                 <label for="edit-name">Name:</label>
                 <input type="text" id="edit-name"  value="${dataToEDit.name}" >
                 
@@ -251,6 +260,11 @@ function getCheckedCategories(checkboxName) {
 
 async function createNewItem(formData) {
   console.log("Creating new item with data:", formData);
+
+  const imageInput = document.getElementById("image");
+  if (imageInput.files.length > 0) {
+    formData.image = await uploadImage(imageInput.files[0]);
+  }
   // You can add the actual AJAX request here to send formData to the backend
   const post = await postData("http://localhost:3000/admin", formData);
   console.log(post);
@@ -265,6 +279,12 @@ async function createNewItem(formData) {
 async function updateItem(formData, id) {
   // Add your AJAX request to send data to the backend here
   // Example:
+
+  // Handle image upload
+  const imageInput = document.getElementById("image");
+  if (imageInput.files.length > 0) {
+    formData.image = await uploadImage(imageInput.files[0]);
+  }
   console.log("Updating new item with data:", formData);
   console.log("Updating new item with id:", id);
   // You can add the actual AJAX request here to send formData to the backend
@@ -335,6 +355,7 @@ function generateTableRows(data) {
       <td>${item.category}</td>
        <td>${item.cost}</td>
       <td>
+       <img src="${item.image}" alt="Image Preview" style="max-width: 50px;">
         <button class="edit-button" data-id="${item.id}">Edit</button> 
         <button class="delete-button" data-id="${item.id}">Delete</button>
         <button class="notify-button" data-id="${item.id}">Notify</button>
@@ -429,6 +450,43 @@ async function createFormData(data) {
 
   console.log(formData);
   return formData;
+}
+
+function previewImage(input) {
+  const preview = document.getElementById("image-preview");
+  const file = input.files[0];
+
+  if (file) {
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      preview.src = e.target.result;
+      preview.style.display = "block";
+    };
+
+    reader.readAsDataURL(file);
+  } else {
+    preview.src = "";
+    preview.style.display = "none";
+  }
+}
+
+// Function to handle image upload
+async function uploadImage(file) {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const response = await fetch("your_image_upload_endpoint", {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Image upload failed! Status: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data.imageUrl; // Update with the actual property containing the image URL
 }
 
 // function convertHtmlToTelegramFormat(htmlContent) {
