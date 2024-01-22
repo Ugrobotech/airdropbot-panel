@@ -5,10 +5,47 @@ function mount() {
     // Example: Attach click event to notify button
     document
       .getElementById("data-table")
-      .addEventListener("click", function (event) {
+      .addEventListener("click", async function (event) {
         if (event.target.classList.contains("notify-button")) {
           const itemId = event.target.getAttribute("data-id");
-          notifyUser(itemId);
+
+          if (
+            window.confirm("Do you want to send a Broadcast Notification ?")
+          ) {
+            console.log("you about to send items with ID :", itemId);
+            const notify = await fetchData(
+              `https://airdrop-bot.onrender.com/admin/${itemId}`
+            );
+            if (notify) {
+              alert("message sent");
+              // Fetch updated data and update the table
+              fetchDataAndRenderTable();
+            } else {
+              alert("there was an error, please try again");
+            }
+          }
+        }
+      });
+
+    // Example: Attach click event to Delete button
+    document
+      .getElementById("data-table")
+      .addEventListener("click", async function (event) {
+        if (event.target.classList.contains("delete-button")) {
+          const itemId = event.target.getAttribute("data-id");
+          if (window.confirm("Do you want to delete this item ?")) {
+            console.log("you about to delets items with ID :", itemId);
+            const del = await deleteData(
+              `https://airdrop-bot.onrender.com/admin/${itemId}`
+            );
+            if (del) {
+              alert("data deleted");
+              // Fetch updated data and update the table
+              fetchDataAndRenderTable();
+            } else {
+              alert("there was an error, please try again");
+            }
+          }
         }
       });
 
@@ -35,6 +72,7 @@ function mount() {
       if (event.target.id === "create-form") {
         event.preventDefault();
         const formData = {
+          imageUrl: document.getElementById("create-url").value,
           name: document.getElementById("create-name").value,
           network: document.getElementById("create-network").value,
           category: getCheckedCategories("create-categories"),
@@ -56,6 +94,7 @@ function mount() {
         event.preventDefault();
 
         const data = {
+          imageUrl: document.getElementById("edit-url").value,
           name: document.getElementById("edit-name").value,
           network: document.getElementById("edit-network").value,
           category: getCheckedCategories("edit-categories"),
@@ -82,7 +121,7 @@ function openCreateModal() {
             <form id="create-form">
              <br>
  <label for="create-url">Image Url:</label>
-                <input type="text" id="create-name" required>
+                <input type="text" id="create-url" required>
 <br>
                 <label for="create-name">Name:</label>
                 <input type="text" id="create-name" required>
@@ -170,9 +209,8 @@ function openEditModal(id, data) {
             <span class="close" onclick="closeEditModal()">&times;</span>
             <form id="edit-form" data-id="${id}">
   <br>
-<label for="image">Image:</label>
-<input type="file" id="image" accept="image/*" onchange="previewImage(this)">
-<img id="image-preview" src="" alt="Image Preview" style="max-width: 100%; display: none;">
+ <label for="edit-url">Image Url:</label>
+                <input type="text" id="edit-url" required>
 <br>
                 <label for="edit-name">Name:</label>
                 <input type="text" id="edit-name"  value="${dataToEDit.name}" >
@@ -261,12 +299,11 @@ function getCheckedCategories(checkboxName) {
 async function createNewItem(formData) {
   console.log("Creating new item with data:", formData);
 
-  const imageInput = document.getElementById("image");
-  if (imageInput.files.length > 0) {
-    formData.image = await uploadImage(imageInput.files[0]);
-  }
   // You can add the actual AJAX request here to send formData to the backend
-  const post = await postData("http://localhost:3000/admin", formData);
+  const post = await postData(
+    "https://airdrop-bot.onrender.com/admin",
+    formData
+  );
   console.log(post);
   if (post) {
     // After successfully creating, you may want to close the modal and update the table
@@ -274,21 +311,21 @@ async function createNewItem(formData) {
     closeCreateModal();
     // Fetch updated data and update the table
     fetchDataAndRenderTable();
+  } else {
+    alert("Please there was an error please try again");
   }
 }
 async function updateItem(formData, id) {
   // Add your AJAX request to send data to the backend here
   // Example:
 
-  // Handle image upload
-  const imageInput = document.getElementById("image");
-  if (imageInput.files.length > 0) {
-    formData.image = await uploadImage(imageInput.files[0]);
-  }
   console.log("Updating new item with data:", formData);
   console.log("Updating new item with id:", id);
   // You can add the actual AJAX request here to send formData to the backend
-  const edit = await editData(`http://localhost:3000/admin/${id}`, formData);
+  const edit = await editData(
+    `https://airdrop-bot.onrender.com/admin/${id}`,
+    formData
+  );
   console.log(edit);
   // After successfully creating, you may want to close the modal and update the table
   if (edit) {
@@ -296,6 +333,8 @@ async function updateItem(formData, id) {
     closeEditModal();
     // Fetch updated data and update the table
     fetchDataAndRenderTable();
+  } else {
+    alert("Please there was an error please try again");
   }
 }
 
@@ -325,9 +364,13 @@ async function fetchDataAndRenderTable() {
     },
   ];
 
-  const Data = await fetchData("http://localhost:3000/admin");
-  const userCount = await fetchData("http://localhost:3000/admin/users");
-  const subCount = await fetchData("http://localhost:3000/admin/subs");
+  const Data = await fetchData("https://airdrop-bot.onrender.com/admin");
+  const userCount = await fetchData(
+    "https://airdrop-bot.onrender.com/admin/users"
+  );
+  const subCount = await fetchData(
+    "https://airdrop-bot.onrender.com/admin/subs"
+  );
   console.log(Data);
   updateUserCount(userCount, subCount);
   generateTableRows(Data);
@@ -347,7 +390,9 @@ function generateTableRows(data) {
     const row = tableBody.insertRow();
     row.innerHTML = `
     
-      <td>${item.id}</td>
+      <td>
+       <img src=${item.imageUrl}>
+      </td>
       <td>${item.name}</td>
       <td>${item.network}</td>
       <td>${item.description}</td>
@@ -355,7 +400,6 @@ function generateTableRows(data) {
       <td>${item.category}</td>
        <td>${item.cost}</td>
       <td>
-       <img src="${item.image}" alt="Image Preview" style="max-width: 50px;">
         <button class="edit-button" data-id="${item.id}">Edit</button> 
         <button class="delete-button" data-id="${item.id}">Delete</button>
         <button class="notify-button" data-id="${item.id}">Notify</button>
@@ -426,6 +470,28 @@ async function editData(url, payload) {
   }
 }
 
+async function deleteData(url) {
+  try {
+    const response = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        // Add any other headers as needed
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("Data:", data);
+    return data;
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
 function updateUserCount(newCount, subCount) {
   const subUserCountElement = document.getElementById("subscribedCount");
   const userCountElement = document.getElementById("userCount"); // Replace with your actual HTML element ID
@@ -443,7 +509,7 @@ async function createFormData(data) {
   // Assuming 'data' is an object with key-value pairs
   for (const key in data) {
     // Check if the value is not an empty string
-    if (data[key] !== "") {
+    if (data[key] !== "" && data[key] !== undefined) {
       formData = { ...formData, [key]: data[key] };
     }
   }
@@ -452,42 +518,23 @@ async function createFormData(data) {
   return formData;
 }
 
-function previewImage(input) {
-  const preview = document.getElementById("image-preview");
-  const file = input.files[0];
-
-  if (file) {
-    const reader = new FileReader();
-
-    reader.onload = function (e) {
-      preview.src = e.target.result;
-      preview.style.display = "block";
-    };
-
-    reader.readAsDataURL(file);
-  } else {
-    preview.src = "";
-    preview.style.display = "none";
-  }
-}
-
 // Function to handle image upload
-async function uploadImage(file) {
-  const formData = new FormData();
-  formData.append("image", file);
+// async function uploadImage(file) {
+//   const formData = new FormData();
+//   formData.append("image", file);
 
-  const response = await fetch("your_image_upload_endpoint", {
-    method: "POST",
-    body: formData,
-  });
+//   const response = await fetch("your_image_upload_endpoint", {
+//     method: "POST",
+//     body: formData,
+//   });
 
-  if (!response.ok) {
-    throw new Error(`Image upload failed! Status: ${response.status}`);
-  }
+//   if (!response.ok) {
+//     throw new Error(`Image upload failed! Status: ${response.status}`);
+//   }
 
-  const data = await response.json();
-  return data.imageUrl; // Update with the actual property containing the image URL
-}
+//   const data = await response.json();
+//   return data.imageUrl; // Update with the actual property containing the image URL
+// }
 
 // function convertHtmlToTelegramFormat(htmlContent) {
 //   // Replace HTML tags with Telegram text styles
@@ -526,3 +573,5 @@ async function uploadImage(file) {
 // }
 
 mount();
+
+// "https://images.pexels.com/photos/210600/pexels-photo-210600.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Image Preview" style="max-width: 50px;"
