@@ -391,7 +391,7 @@ function generateTableRows(data) {
     row.innerHTML = `
     
       <td>
-       <img src=${item.imageUrl}>
+       <img src=${item.imageUrl} style="width: 3cm; height: 2cm;">
       </td>
       <td>${item.name}</td>
       <td>${item.network}</td>
