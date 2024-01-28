@@ -27,6 +27,34 @@ function mount() {
         }
       });
 
+    // Example: Attach click event to notify wishlist button
+    document
+      .getElementById("data-table")
+      .addEventListener("click", async function (event) {
+        if (event.target.classList.contains("notify-wishlist-button")) {
+          const itemId = event.target.getAttribute("data-id");
+
+          if (
+            window.confirm(
+              "Do you want to send a Broadcast Notification to all user?"
+            )
+          ) {
+            console.log("you about to send items with ID :", itemId);
+            const notify = await fetchData(
+              `https://airdrop-bot.onrender.com/admin/${itemId}?wishlist=wishlist`
+            );
+            if (notify) {
+              console.log(notify);
+              alert("message sent");
+              // Fetch updated data and update the table
+              fetchDataAndRenderTable();
+            } else {
+              alert("there was an error, please try again");
+            }
+          }
+        }
+      });
+
     // Example: Attach click event to Delete button
     document
       .getElementById("data-table")
@@ -402,7 +430,8 @@ function generateTableRows(data) {
       <td>
         <button class="edit-button" data-id="${item.id}">Edit</button> 
         <button class="delete-button" data-id="${item.id}">Delete</button>
-        <button class="notify-button" data-id="${item.id}">Notify</button>
+        <button class="notify-button" data-id="${item.id}">Notify all</button>
+        <button class="notify-wishlist-button" data-id="${item.id}">Notify wishlist owners</button>
       </td>
     `;
   });
