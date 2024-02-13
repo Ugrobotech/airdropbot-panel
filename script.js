@@ -367,6 +367,31 @@ async function updateItem(formData, id) {
 }
 
 async function fetchDataAndRenderTable() {
+  // Dummy data - replace this with actual data from your backend
+  // const dummyData = [
+  //   {
+  //     id: 1,
+  //     name: "Item 1",
+  //     network: "Network A",
+  //     subscribed: true,
+  //     catergory: "Latest",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Item 2",
+  //     network: "Network B",
+  //     subscribed: false,
+  //     catergory: "potential",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Item 3",
+  //     network: "Network C",
+  //     subscribed: true,
+  //     catergory: "Hottest",
+  //   },
+  // ];
+
   const Data = await fetchData("https://airdrop-bot.onrender.com/admin");
   const userCount = await fetchData(
     "https://airdrop-bot.onrender.com/admin/users"
