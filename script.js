@@ -443,11 +443,11 @@ async function fetchData(url) {
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
+    } else {
+      const data = await response.json();
+      console.log("Data:", data);
+      return data;
     }
-
-    const data = await response.json();
-    console.log("Data:", data);
-    return data;
   } catch (error) {
     console.error("Error:", error);
   }
