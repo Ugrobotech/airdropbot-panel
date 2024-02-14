@@ -147,9 +147,10 @@ function openCreateModal() {
         <div class="modal-content">
             <span class="close" onclick="closeCreateModal()">&times;</span>
             <form id="create-form">
+            <div id="image-preview"></div>
              <br>
  <label for="create-url">Image Url:</label>
-                <input type="text" id="create-url" required>
+                <input type="text" id="create-url" required onkeyup="previewImage('create-url')">
 <br>
                 <label for="create-name">Name:</label>
                 <input type="text" id="create-name" required>
@@ -236,9 +237,10 @@ function openEditModal(id, data) {
         <div class="modal-content">
             <span class="close" onclick="closeEditModal()">&times;</span>
             <form id="edit-form" data-id="${id}">
+            <div id="image-preview"></div>
   <br>
  <label for="edit-url">Image Url:</label>
-                <input type="text" id="edit-url">
+                <input type="text" id="edit-url" onkeyup="previewImage('edit-url')">
 <br>
                 <label for="edit-name">Name:</label>
                 <input type="text" id="edit-name"  value="${dataToEDit.name}" >
@@ -547,6 +549,36 @@ async function createFormData(data) {
   return formData;
 }
 
+// to preview and check image url is valid
+function previewImage(inputId) {
+  let imageUrlInput = document.getElementById(inputId).value;
+  let imagePreview = document.getElementById("image-preview");
+
+  try {
+    let url = new URL(imageUrlInput);
+    let pathname = url.pathname.toLowerCase();
+
+    // Check if the URL has a known image extension
+    if (
+      pathname.endsWith(".jpeg") ||
+      pathname.endsWith(".jpg") ||
+      pathname.endsWith(".gif") ||
+      pathname.endsWith(".png")
+    ) {
+      // Valid image URL
+      imagePreview.innerHTML =
+        '<img src="' +
+        imageUrlInput +
+        '"style="width: 3cm; height: 2cm; alt="Preview">';
+    } else {
+      // Invalid image URL
+      imagePreview.innerHTML = "❌ Invalid image URL";
+    }
+  } catch (error) {
+    // Invalid URL format
+    imagePreview.innerHTML = "❌ Invalid URL format";
+  }
+}
 // Function to handle image upload
 // async function uploadImage(file) {
 //   const formData = new FormData();
