@@ -154,7 +154,7 @@ function openCreateModal() {
                 <label for="create-name">Name:</label>
                 <input type="text" id="create-name" required>
                 
-                <label for="create-network">Network:</label>
+                <label for="create-network">Network/Chain:</label>
                 <input type="text" id="create-network" required>
                 
                 <label>Categories:</label>
@@ -243,7 +243,7 @@ function openEditModal(id, data) {
                 <label for="edit-name">Name:</label>
                 <input type="text" id="edit-name"  value="${dataToEDit.name}" >
                 
-                <label for="edit-network">Network:</label>
+                <label for="edit-network">Network/Chain:</label>
                 <input type="text" id="edit-network" value="${dataToEDit.network}" >
                 
                 <label>Categories:</label>
