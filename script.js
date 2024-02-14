@@ -238,7 +238,7 @@ function openEditModal(id, data) {
             <form id="edit-form" data-id="${id}">
   <br>
  <label for="edit-url">Image Url:</label>
-                <input type="text" id="edit-url" required>
+                <input type="text" id="edit-url">
 <br>
                 <label for="edit-name">Name:</label>
                 <input type="text" id="edit-name"  value="${dataToEDit.name}" >
@@ -393,14 +393,14 @@ async function fetchDataAndRenderTable() {
   // ];
 
   const Data = await fetchData("https://airdrop-bot.onrender.com/admin");
-  const userCount = await fetchData(
-    "https://airdrop-bot.onrender.com/admin/users"
-  );
-  const subCount = await fetchData(
-    "https://airdrop-bot.onrender.com/admin/subs"
-  );
+  // const userCount = await fetchData(
+  //   "https://airdrop-bot.onrender.com/admin/users"
+  // );
+  // const subCount = await fetchData(
+  //   "https://airdrop-bot.onrender.com/admin/subs"
+  // );
   console.log(Data);
-  updateUserCount(userCount, subCount);
+  // updateUserCount(userCount, subCount);
   generateTableRows(Data);
   return Data;
 }
@@ -521,16 +521,16 @@ async function deleteData(url) {
   }
 }
 
-function updateUserCount(newCount, subCount) {
-  const subUserCountElement = document.getElementById("subscribedCount");
-  const userCountElement = document.getElementById("userCount"); // Replace with your actual HTML element ID
-  if (userCountElement && subUserCountElement) {
-    subUserCountElement.textContent = subCount;
-    userCountElement.textContent = newCount;
-  } else {
-    console.error("User count element not found.");
-  }
-}
+// function updateUserCount(newCount, subCount) {
+//   const subUserCountElement = document.getElementById("subscribedCount");
+//   const userCountElement = document.getElementById("userCount"); // Replace with your actual HTML element ID
+//   if (userCountElement && subUserCountElement) {
+//     subUserCountElement.textContent = subCount;
+//     userCountElement.textContent = newCount;
+//   } else {
+//     console.error("User count element not found.");
+//   }
+// }
 
 async function createFormData(data) {
   let formData = {};
