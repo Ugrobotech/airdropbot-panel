@@ -146,6 +146,16 @@ button:hover {
   background-color: #45a049;
 }
 
+.spinner {
+  display: none;
+  margin-left: 5px; /* Adjust the spacing as needed */
+}
+
+.loading {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
 /* Media queries for responsiveness */
 @media screen and (max-width: 600px) {
   .dashboard {

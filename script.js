@@ -96,9 +96,15 @@ function mount() {
 
     // Example: Attach submit event to create form
     document.getElementById("create-form");
-    document.body.addEventListener("submit", function (event) {
+    document.body.addEventListener("submit", async function (event) {
       if (event.target.id === "create-form") {
         event.preventDefault();
+
+        // to disable button and show loading
+        const button = document.getElementById("createItemBtn");
+        button.disabled = true;
+        button.innerText = "Loading ...";
+
         const formData = {
           imageUrl: document.getElementById("create-url").value,
           name: document.getElementById("create-name").value,
@@ -109,7 +115,15 @@ function mount() {
           cost: document.getElementById("create-price").value,
         };
         console.log("FORMDATA: ", formData);
-        createNewItem(formData);
+        //to strip put image url if it is null
+        const formattedFormData = await createFormData(formData);
+
+        const newItem = await createNewItem(formattedFormData);
+
+        if (newItem) {
+          button.disabled = false;
+          button.innerText = "Create Item";
+        }
       }
     });
 
@@ -120,6 +134,11 @@ function mount() {
         const itemId = event.target.getAttribute("data-id");
         console.log("this is Item Id :", itemId);
         event.preventDefault();
+
+        // to disable button and show loading..
+        const button = document.getElementById("editItemBtn");
+        button.disabled = true;
+        button.innerText = "Loading ...";
 
         const data = {
           imageUrl: document.getElementById("edit-url").value,
@@ -134,7 +153,12 @@ function mount() {
         const formData = await createFormData(data);
 
         console.log("updated formitem: ", formData);
-        updateItem(formData, itemId);
+        const updated = await updateItem(formData, itemId);
+
+        if (updated) {
+          button.disabled = false;
+          button.innerText = "edit Item";
+        }
       }
     });
   });
@@ -181,7 +205,7 @@ function openCreateModal() {
   <label for="create-price">Price:</label>
                 <input type="text" id="create-price" required>
                 <br>
-                <button type="submit">Create Item</button>
+                <button id="createItemBtn" type="submit" ">Create Item</button>
             </form>
         </div>
     `;
@@ -271,7 +295,7 @@ function openEditModal(id, data) {
  <label for="edit-price">Price:</label>
                 <input type="text" id="edit-price" value="${dataToEDit.cost}" required>
                 <br>
-                <button type="submit">edit Item</button>
+                <button id="editItemBtn" type="submit">edit Item</button>
             </form>
         </div>
     `;
