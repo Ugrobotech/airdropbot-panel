@@ -150,7 +150,7 @@ function openCreateModal() {
             <div id="image-preview"></div>
              <br>
  <label for="create-url">Image Url:</label>
-                <input type="text" id="create-url" required onkeyup="previewImage('create-url')">
+                <input type="text" id="create-url" onkeyup="previewImage('create-url')">
 <br>
                 <label for="create-name">Name:</label>
                 <input type="text" id="create-name" required>
@@ -636,3 +636,12 @@ function previewImage(inputId) {
 mount();
 
 // "https://images.pexels.com/photos/210600/pexels-photo-210600.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Image Preview" style="max-width: 50px;"
+
+//airdrop 🔥
+// #Web3Go is a data intelligence network that connects humans, data, and AI. It's pretty smart stuff. It's also worth mentioning, that they've raised $4M from investors like #Binance and Hashkey Capital.
+
+//• No token just yet, but airdrop has been announced for early users.📌 • Sign up, mint your passport, and collect Gold leaves to be eligible.
+
+// https://images.pexels.com/photos/210600/pexels-photo-210600.jpeg?auto=compress&cs=tinysrgb&w=600
+
+// https://images.pexels.com/photos/844124/pexels-photo-844124.jpeg?auto=compress&cs=tinysrgb&w=600
