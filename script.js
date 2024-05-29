@@ -14,7 +14,7 @@ function mount() {
           ) {
             console.log("you about to send items with ID :", itemId);
             const notify = await fetchData(
-              `https://airdrop-bot.onrender.com/admin/${itemId}`
+              `https://airdrop-bot-rmwl.onrender.com/admin/${itemId}`
             );
             if (notify) {
               alert("message sent");
@@ -41,7 +41,7 @@ function mount() {
           ) {
             console.log("you about to send items with ID :", itemId);
             const notify = await fetchData(
-              `https://airdrop-bot.onrender.com/admin/${itemId}?wishlist=wishlist`
+              `https://airdrop-bot-rmwl.onrender.com/admin/${itemId}?wishlist=wishlist`
             );
             if (notify) {
               console.log(notify);
@@ -64,7 +64,7 @@ function mount() {
           if (window.confirm("Do you want to delete this item ?")) {
             console.log("you about to delets items with ID :", itemId);
             const del = await deleteData(
-              `https://airdrop-bot.onrender.com/admin/${itemId}`
+              `https://airdrop-bot-rmwl.onrender.com/admin/${itemId}`
             );
             if (del) {
               alert("data deleted");
@@ -355,7 +355,7 @@ async function createNewItem(formData) {
 
   // You can add the actual AJAX request here to send formData to the backend
   const post = await postData(
-    "https://airdrop-bot.onrender.com/admin",
+    "https://airdrop-bot-rmwl.onrender.com/admin",
     formData
   );
   console.log(post);
@@ -377,7 +377,7 @@ async function updateItem(formData, id) {
   console.log("Updating new item with id:", id);
   // You can add the actual AJAX request here to send formData to the backend
   const edit = await editData(
-    `https://airdrop-bot.onrender.com/admin/${id}`,
+    `https://airdrop-bot-rmwl.onrender.com/admin/${id}`,
     formData
   );
   console.log(edit);
@@ -418,7 +418,7 @@ async function fetchDataAndRenderTable() {
   //   },
   // ];
 
-  const Data = await fetchData("https://airdrop-bot.onrender.com/admin");
+  const Data = await fetchData("https://airdrop-bot-rmwl.onrender.com/admin");
   // const userCount = await fetchData(
   //   "https://airdrop-bot.onrender.com/admin/users"
   // );
@@ -559,6 +559,22 @@ async function deleteData(url) {
 // }
 
 async function createFormData(data) {
+  let imageUrl = data.imageUrl;
+  if (data.imageUrl !== "" && data.imageUrl !== undefined) {
+    let url = new URL(imageUrl);
+    let pathname = url.pathname.toLowerCase();
+    // Check if the URL has a known image extension
+    if (
+      pathname.endsWith(".jpeg") ||
+      pathname.endsWith(".jpg") ||
+      pathname.endsWith(".gif") ||
+      pathname.endsWith(".png")
+    ) {
+      imageUrl = data.imageUrl;
+    } else {
+      data.imageUrl = "";
+    }
+  }
   let formData = {};
 
   // Assuming 'data' is an object with key-value pairs
